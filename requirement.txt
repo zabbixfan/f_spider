@@ -5,5 +5,4 @@ idna==2.6
 PyMySQL==0.8.0
 requests==2.18.4
 SQLAlchemy==1.2.6
-UNKNOWN==0.0.0
 urllib3==1.22
