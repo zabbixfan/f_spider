@@ -17,7 +17,6 @@ agent_id = Config.agent_id
 # 获取token函数，文本里记录的token失效时调用
 def get_access_token():
     get_token_url = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s' % (corp_id, corp_secret)
-    print(get_token_url)
     r = requests.get(get_token_url)
     request_json = r.json()
     this_access_token = request_json['access_token']
@@ -26,7 +25,7 @@ def get_access_token():
 
 
 def send_message(message):
-    access_token = Config.access_token
+    access_token = get_access_token()
     to_user = '@all'
     send_message_url = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s' % access_token
     message_params = {
