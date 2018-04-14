@@ -50,9 +50,11 @@ r = requests.get(url="http://www.hzfc.gov.cn/yszmore.php",headers=headers)
 content = r.content
 soup = BeautifulSoup(content,"html.parser")
 contents = soup.find(name="div",attrs={"class":"policy"})
-
-for li_body in contents.find_all_next("li"):
-    if li_body.a:
-        if not session.query(User).filter(User.href==li_body.a['href']).first():
-            User(href=li_body.a['href'],content=li_body.a.string).save()
-            send_message("新预售证 {}".format(li_body.a.string))
+if contents:
+    for li_body in contents.find_all_next("li"):
+        if li_body.a:
+            if not session.query(User).filter(User.href==li_body.a['href']).first():
+                User(href=li_body.a['href'],content=li_body.a.string).save()
+                send_message("新预售证 {}".format(li_body.a.string))
+else:
+    print(content)
