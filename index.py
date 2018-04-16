@@ -1,6 +1,5 @@
 #coding:utf-8
 import sys
-print(sys.version)
 if not sys.version.startswith('3'):
     reload(sys)
     sys.setdefaultencoding('utf-8')
