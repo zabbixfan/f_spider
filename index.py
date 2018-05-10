@@ -57,25 +57,10 @@ def parser_html(source_html):
     soup = BeautifulSoup(source_html,"html.parser")
     houses = soup.find_all(name="li", attrs={"class": "mrgr20 bg_white2 pt10"})
     for house in houses:
-        print(house.div)
+        print(house("div"))
 
 if __name__ == '__main__':
     html_text = get_html()
     if html_text:
         parser_html(html_text)
 
-# headers = {
-#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
-# }
-# r = requests.get(url="http://www.hzfc.gov.cn/yszmore.php",headers=headers)
-# content = r.content
-# soup = BeautifulSoup(content,"html.parser")
-# contents = soup.find(name="div",attrs={"class":"policy"})
-# if contents:
-#     for li_body in contents.find_all_next("li"):
-#         if li_body.a:
-#             if not session.query(User).filter(User.href==li_body.a['href']).first():
-#                 User(href=li_body.a['href'],content=li_body.a.string).save()
-#                 send_message("新预售证 {}".format(li_body.a.string))
-# else:
-#     print(content)
