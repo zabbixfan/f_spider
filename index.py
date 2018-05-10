@@ -1,5 +1,5 @@
 #coding:utf-8
-import sys
+import sys,re
 if not sys.version.startswith('3'):
     reload(sys)
     sys.setdefaultencoding('utf-8')
@@ -55,12 +55,24 @@ def get_html():
 
 def parser_html(source_html):
     soup = BeautifulSoup(source_html,"html.parser")
-    houses = soup.find_all(name="li", attrs={"class": "mrgr20 bg_white2 pt10"})
-    for house in houses:
-        print(house("div"))
+    houses = soup.find(name="dd", attrs={"style": "padding-bottom:10px;padding-left: 11px;"})
+    presales = houses.find_all(name="li")
+    result = []
+    for house in presales[0:10]:
+        result.append({
+            'name': re.sub("\s", "", house.find('div',class_='secfyzs_wenzi').string).split('[')[0]
+            'presaleid': re.sub("\s", "", house.find('p',class_='black333 f16 line40').string)
+            'url': house.a['href']
+        })
+
+def save_item(house):
 
 if __name__ == '__main__':
     html_text = get_html()
     if html_text:
-        parser_html(html_text)
+        houses = parser_html(html_text)
+        if houses:
+            for house in houses:
+                save_item(house)
+
 

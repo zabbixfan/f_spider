@@ -23,6 +23,38 @@ class User(Model):
             self.id = uuid().hex
         session.add(self)
         session.commit()
+
+class HouseDetail(Model):
+    __tablename__ = 'house_detail'
+    id=Column(String(32),primary_key=True)
+    presale_num = Column(String(64),default="")
+    building_num = Column(String(64))
+    room_num = Column(String(64))
+    floor_area = Column(String(64))
+    use_area = Column(String(64))
+    used_precent = Column(String(64))
+    unit_price = Column(String(64))
+    decorate_price = Column(String(64))
+    total_price = Column(String(64))
+    house_id = Column(String(32), Model.ForeignKey('houses.id'))
+    def save(self):
+        if not self.id:
+            self.id = uuid().hex
+        session.add(self)
+        session.commit()
+
+
+class Houses(Model):
+    __tablename__ = 'houses'
+    id = Column(String(32),primary_key=True)
+    url = Column(String(255))
+    name = Column(String(64))
+    def save(self):
+        if not self.id:
+            self.id = uuid().hex
+        session.add(self)
+        session.commit()
+
 if __name__=='__main__':
     pass
     # Model.metadata.drop_all(eng)
