@@ -41,16 +41,15 @@ def send_message(message):
 
 
 # send_message("中国你好")
-def get_html():
+def get_html(url):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
     }
-    r = requests.get(url="http://www.tmsf.com/index.jsp", headers=headers)
+    r = requests.get(url=url, headers=headers)
     if r.status_code == 200:
         content = r.content
         return content
     else:
-        print(r.content)
         return False
 
 def parser_html(source_html):
@@ -60,15 +59,25 @@ def parser_html(source_html):
     result = []
     for house in presales[0:10]:
         result.append({
-            'name': re.sub("\s", "", house.find('div',class_='secfyzs_wenzi').string).split('[')[0]
-            'presaleid': re.sub("\s", "", house.find('p',class_='black333 f16 line40').string)
+            'name': re.sub("\s", "", house.find('div',class_='secfyzs_wenzi').string).split('[')[0],
+            'presaleid': re.sub("\s", "", house.find('p',class_='black333 f16 line40').string),
             'url': house.a['href']
         })
+    return result
 
 def save_item(house):
+    url = Config.tmsf_url + house['url']
+    detail_html = get_html(url)
+    if detail_html:
+        soup = BeautifulSoup(detail_html,"html.parser")
+        wuye_tag = soup.find("strong",text="物业类型：")
+        wuye_info = re.sub("\s","",wuye_tag.next_sibling.next_sibling.get_text())
+        if wuye_info.find("")
+    else:
+        return False
 
 if __name__ == '__main__':
-    html_text = get_html()
+    html_text = get_html("http://www.tmsf.com/index.jsp")
     if html_text:
         houses = parser_html(html_text)
         if houses:
