@@ -12,9 +12,6 @@ def houses_list(limit=10, offset=0, keyword=None):
         keyword = keyword.replace("%", '')
         keyword = keyword.replace('_', '')
         keyword = keyword.replace('*', '%')
-        for house in Houses.query.filter().all():
-            print(house.name)
-        print(keyword)
         house = Houses.query.filter(Houses.name.like(keyword)).first()
         if house:
             query = query.filter(HouseDetail.house==house.id)
