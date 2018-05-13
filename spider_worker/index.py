@@ -1,13 +1,14 @@
 #coding:utf-8
-import sys,re
+import re
+import sys
+
 if not sys.version.startswith('3'):
     reload(sys)
     sys.setdefaultencoding('utf-8')
 import requests
 import json
-from config import Config
 from bs4 import BeautifulSoup
-from model import *
+from spider_worker.model import *
 corp_id = Config.corp_id
 corp_secret = Config.corp_secret
 agent_id = Config.agent_id
