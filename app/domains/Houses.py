@@ -11,7 +11,7 @@ def get_house_name():
         'data': [house.name for house in houses]
     }
 
-def houses_list(limit=10, offset=0, keyword=None,build_num=0):
+def houses_list(limit=10, offset=0, keyword=None,build_num=0,area=0):
     query = db.session.query(HouseDetail)
     if keyword:
         keyword_string = re.sub(r"[\s+\.\!\/_,$%*^(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&（）]+'", "", keyword)
@@ -20,6 +20,8 @@ def houses_list(limit=10, offset=0, keyword=None,build_num=0):
             query = query.filter(HouseDetail.house==house.id)
         if build_num:
             query = query.filter(HouseDetail.building_num.startswith(build_num))
+        if area:
+            query = query.filter(HouseDetail.floor_area > area)
     return PageResult(query, limit, offset).to_dict(lambda house: {
         "id": house.id,
         "presale_num": house.presale_num,

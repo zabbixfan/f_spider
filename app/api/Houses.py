@@ -17,6 +17,7 @@ def get_args(return_parse_args=True):
     rp.add_argument('limit',type=int,default=20)
     rp.add_argument('keyword',required=False)
     rp.add_argument('build_num',default=0)
+    rp.add_argument('area',default=0)
     return rp.parse_args() if return_parse_args else rp
 
 
@@ -26,7 +27,11 @@ class Houses(Resource):
     @swag_from(get_request_parser_doc_dist("get houses", ["Houses"], get_args(False)))
     def get(self):
         args = get_args()
-        return ApiResponse(houses_list(keyword=args.keyword,offset=args.offset,limit=args.limit,build_num=args.build_num))
+        return ApiResponse(houses_list(keyword=args.keyword, \
+                                       offset=args.offset, \
+                                       limit=args.limit, \
+                                       build_num=args.build_num, \
+                                       area=args.area))
 
 class HouseName(Resource):
 
