@@ -17,12 +17,11 @@ agent_id = Config.agent_id
 
 
 # 获取token函数，文本里记录的token失效时调用
-def get_access_token(retry=0):
+def get_access_token():
     get_token_url = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s' % (corp_id, corp_secret)
-    r = requests.get(get_token_url,timeout=10)
-    request_json = r.json()
+    res = get_html(get_token_url)
+    request_json = json.loads(res.decode())
     this_access_token = request_json['access_token']
-    r.close()
     return this_access_token
 
 
@@ -39,8 +38,8 @@ def send_message(message):
         },
         "safe": 0
     }
-    r = requests.post(send_message_url, data=json.dumps(message_params))
-    print(json.dumps(r.json(), indent=4))
+    res = get_html(send_message_url,data=json.dumps(message_params),method='post')
+    print(res)
 
 
 # send_message("中国你好")
@@ -58,13 +57,16 @@ def get_proxies():
         return {"http": "http://127.0.0.1:1087"}
     else:
         return None
-def get_html(url,retry=0):
+def get_html(url,retry=0,method='get',data=None):
     proxies = get_proxies()
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
     }
     try:
-        r = requests.get(url=url, headers=headers,timeout=10,proxies=proxies)
+        if method == 'get':
+            r = requests.get(url=url, headers=headers,timeout=10,proxies=proxies)
+        elif method == 'post':
+            r = requests.post(url=url,headers=headers,timeout=10,proxies=proxies,data=data)
     except Exception as e:
 
         retry += 1
