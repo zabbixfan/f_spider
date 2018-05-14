@@ -17,7 +17,7 @@ agent_id = Config.agent_id
 
 
 # 获取token函数，文本里记录的token失效时调用
-def get_access_token():
+def get_access_token(retry=0):
     get_token_url = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s' % (corp_id, corp_secret)
     r = requests.get(get_token_url,timeout=10)
     request_json = r.json()

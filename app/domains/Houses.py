@@ -3,6 +3,7 @@
 from app.common.pageHelper import PageResult
 from app.models.Houses import Houses, HouseDetail
 from app import db
+import re
 
 def get_house_name():
     houses = db.session.query(Houses).all()
@@ -13,10 +14,8 @@ def get_house_name():
 def houses_list(limit=10, offset=0, keyword=None,build_num=0):
     query = db.session.query(HouseDetail)
     if keyword:
-        keyword = keyword.replace("%", '')
-        keyword = keyword.replace('_', '')
-        keyword = keyword.replace('*', '%')
-        house = Houses.query.filter(Houses.name.startswith(keyword)).first()
+        keyword_string = re.sub(r"[\s+\.\!\/_,$%*^(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&（）]+'", "", keyword)
+        house = Houses.query.filter(Houses.name.startswith(keyword_string)).first()
         if house:
             query = query.filter(HouseDetail.house==house.id)
         if build_num:
