@@ -8,7 +8,9 @@ if not sys.version.startswith('3'):
 import requests
 import json
 from bs4 import BeautifulSoup
+import socket
 from spider_worker.model import *
+from config import Config
 corp_id = Config.corp_id
 corp_secret = Config.corp_secret
 agent_id = Config.agent_id
@@ -42,8 +44,22 @@ def send_message(message):
 
 
 # send_message("中国你好")
+def get_proxies():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(0.5)
+    try:
+        s.connect(('127.0.0.1', 1087))
+        res = True
+    except Exception as e:
+        res = False
+    finally:
+        s.close()
+    if res:
+        return {"http": "http://127.0.0.1:1087"}
+    else:
+        return None
 def get_html(url,retry=0):
-    proxies = {"http": "http://127.0.0.1:1087"}
+    proxies = get_proxies()
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
     }
@@ -203,19 +219,18 @@ def save_db(house):
                 room.save()
 
 if __name__ == '__main__':
-    # html_text = get_html("http://www.tmsf.com/index.jsp")
-    # if html_text:
-    #     houses = parser_html(html_text)
-    #     if houses:
-    #         for house in houses:
-    #             save_item(house)
-    # html_text = get_html("http://www.tmsf.com/xsweb/")
-    # if html_text:
-    #     houses = parser_html_xiaoshan(html_text)
-    #     if houses:
-    #         for house in houses:
-    #             print(house)
-    #             save_item(house)
+    html_text = get_html("http://www.tmsf.com/index.jsp")
+    if html_text:
+        houses = parser_html(html_text)
+        if houses:
+            for house in houses:
+                save_item(house)
+    html_text = get_html("http://www.tmsf.com/xsweb/")
+    if html_text:
+        houses = parser_html_xiaoshan(html_text)
+        if houses:
+            for house in houses:
+                save_item(house)
     html_text = get_html("http://www.tmsf.com/newhouse/OpenReport_show_330184.htm")
     if html_text:
         houses = parser_html_yuhang(html_text)
