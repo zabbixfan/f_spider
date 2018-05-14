@@ -4,9 +4,13 @@ from app.common.pageHelper import PageResult
 from app.models.Houses import Houses, HouseDetail
 from app import db
 
+def get_house_name():
+    houses = db.session.query(Houses).all()
+    return {
+        'data': [house.name for house in houses]
+    }
 
-
-def houses_list(limit=10, offset=0, keyword=None):
+def houses_list(limit=10, offset=0, keyword=None,build_num=0):
     query = db.session.query(HouseDetail)
     if keyword:
         keyword = keyword.replace("%", '')
@@ -15,7 +19,9 @@ def houses_list(limit=10, offset=0, keyword=None):
         house = Houses.query.filter(Houses.name.startswith(keyword)).first()
         if house:
             query = query.filter(HouseDetail.house==house.id)
-    return PageResult(query.order_by(-HouseDetail.presale_num), limit, offset).to_dict(lambda house: {
+        if build_num:
+            query = query.filter(HouseDetail.building_num.startswith(build_num))
+    return PageResult(query, limit, offset).to_dict(lambda house: {
         "id": house.id,
         "presale_num": house.presale_num,
         "building_num": house.building_num,
