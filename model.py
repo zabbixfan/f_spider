@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker,relationship
 from sqlalchemy import ForeignKey
 from uuid import uuid1 as uuid
-from ..config import Config
+from config import Config
 eng=create_engine(Config.db_string)
 Model=declarative_base()
 Session = sessionmaker(bind=eng)

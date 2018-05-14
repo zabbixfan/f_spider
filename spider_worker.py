@@ -9,7 +9,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 import socket
-from spider_worker.model import *
+from model import *
 from config import Config
 corp_id = Config.corp_id
 corp_secret = Config.corp_secret
