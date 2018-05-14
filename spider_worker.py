@@ -1,7 +1,7 @@
 #coding:utf-8
 import re
 import sys
-
+import os
 if not sys.version.startswith('3'):
     reload(sys)
     sys.setdefaultencoding('utf-8')
@@ -110,7 +110,7 @@ def parser_html_yuhang(source_html):
     houses = soup.find("div",attrs={"style": "display:block;"}).find_next_sibling("div")
     presales = houses.find_all("div",attrs={"class": "tb_bg"})
     result = []
-    for house in presales[0:5]:
+    for house in presales[0:8]:
         house_info1 = house.a.table.tbody.find_all('td')
         house_info2 = house.a.find_next_sibling("table")['onclick']
         pattern = re.compile('\(\'(.*)\'\)')
@@ -148,7 +148,8 @@ def save_item(house):
         wuye_tag = soup.find("strong",text="物业类型：")
         wuye_info = re.sub("\s","",wuye_tag.next_sibling.next_sibling.get_text())
         if wuye_info.find("住宅")> -1 and not session.query(HouseDetail).filter(HouseDetail.presale_num==house['presale_num']).first():
-            send_message("有新预售证，楼盘名{}".format(house['name']))
+            if os.environ.get('ENV_CODE') == "GA":
+                send_message("有新预售证，楼盘名{}".format(house['name']))
             save_db(house)
     else:
         return False
