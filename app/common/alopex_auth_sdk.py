@@ -3,7 +3,7 @@
 from flask import request, g,redirect,make_response
 from itsdangerous import TimedJSONWebSignatureSerializer as JwtSerializer
 import functools,hashlib
-
+from time import time
 from config import Config
 
 APP_ID = Config.APP_ID
@@ -98,3 +98,25 @@ def SignatureGeneration(res_dict={}, secret_key="", time_out=300):
     sign_str = secret_key + str
     sign = hashlib.md5(sign_str).hexdigest()[8:-8]
     return sign
+
+
+class UserModel:
+
+    def __init__(self):
+        self.secret = Config.TOKEN_SECRET
+        self.exprires = Config.TOKEN_DEFAULT_EXPIRES
+
+    def info_to_token(self,user_object):
+        roles = user_object.job.role.all()
+        self.info = {
+            "id": user_object.id,
+            "email": user_object.email,
+            "name": user_object.name,
+            "loginName": user_object.email.split("@")[0],
+            "role": [role.name for role in roles] if roles else []
+        }
+        s = JwtSerializer(secret_key=self.secret,expires_in=self.exprires)
+        return s.dumps({
+            "user": self.info,
+            "issued_at": time()
+        })
