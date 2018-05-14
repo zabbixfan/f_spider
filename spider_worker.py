@@ -148,6 +148,7 @@ def save_item(house):
         wuye_tag = soup.find("strong",text="物业类型：")
         wuye_info = re.sub("\s","",wuye_tag.next_sibling.next_sibling.get_text())
         if wuye_info.find("住宅")> -1 and not session.query(HouseDetail).filter(HouseDetail.presale_num==house['presale_num']).first():
+            send_message("有新预售证，楼盘名{}".format(house['name']))
             save_db(house)
     else:
         return False
@@ -219,6 +220,7 @@ def save_db(house):
                 room.save()
 
 if __name__ == '__main__':
+    print("print worker...")
     html_text = get_html("http://www.tmsf.com/index.jsp")
     if html_text:
         houses = parser_html(html_text)
