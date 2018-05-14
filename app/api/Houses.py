@@ -30,4 +30,4 @@ class Houses(Resource):
         return ApiResponse(houses_list(keyword=args.keyword,offset=args.offset,limit=args.limit))
 
 
-api.add_resource(Houses, '/houses')
+api.add_resource(Houses, '/houses/')

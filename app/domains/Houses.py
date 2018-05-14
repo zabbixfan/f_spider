@@ -12,10 +12,10 @@ def houses_list(limit=10, offset=0, keyword=None):
         keyword = keyword.replace("%", '')
         keyword = keyword.replace('_', '')
         keyword = keyword.replace('*', '%')
-        house = Houses.query.filter(Houses.name.like(keyword)).first()
+        house = Houses.query.filter(Houses.name.startswith(keyword)).first()
         if house:
             query = query.filter(HouseDetail.house==house.id)
-    return PageResult(query, limit, offset).to_dict(lambda house: {
+    return PageResult(query.order_by(-HouseDetail.presale_num), limit, offset).to_dict(lambda house: {
         "id": house.id,
         "presale_num": house.presale_num,
         "building_num": house.building_num,
