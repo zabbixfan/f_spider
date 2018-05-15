@@ -8,9 +8,27 @@ import re
 def get_house_name():
     houses = db.session.query(Houses).all()
     return {
-        'data': [house.name for house in houses]
+        'data': [{'name':house.name,'id':house.id} for house in houses]
     }
+def get_building_num_by_house_name(id):
+    build_nums = db.session.query(HouseDetail.building_num).filter(HouseDetail.house==id).group_by(HouseDetail.building_num).all()
+    return {'data':[build[0]for build in build_nums]}
 
+def get_building_by_name(id,build):
+    rooms = db.session.query(HouseDetail).filter(HouseDetail.house==id).filter(HouseDetail.building_num==build).all()
+    ret = []
+    rooms.sort(key=lambda x:int(re.search(r'(\d+)室',x.room_num).group(1)))
+    room_nums = list(set([re.search(r'(0\d)室',room.room_num).group(1) for room in rooms]))
+    n = 0
+    for index,room in enumerate(rooms[:-2:len(room_nums)]):
+        m = 0
+        for count in room_nums:
+            if len(ret) < n+1:
+                ret.append({})
+            ret[n][count]='{}/{}/{}/{}'.format(rooms[index+m].room_num,rooms[index+m].floor_area,rooms[index+m].unit_price,rooms[index+m].total_price)
+            m += 1
+        n+=1
+    return ret
 def houses_list(limit=10, offset=0, keyword=None,build_num=0,area=0):
     query = db.session.query(HouseDetail)
     if keyword:
