@@ -18,9 +18,10 @@ def get_building_by_name(id,build):
     rooms = db.session.query(HouseDetail).filter(HouseDetail.house==id).filter(HouseDetail.building_num==build).all()
     ret = []
     rooms.sort(key=lambda x:int(re.search(r'(\d+)室',x.room_num).group(1)))
-    room_nums = list(set([re.search(r'(0\d)室',room.room_num).group(1) for room in rooms]))
+    room_nums = sorted(list(set([re.search(r'(0\d)室',room.room_num).group(1) for room in rooms])))
     n = 0
-    for index,room in enumerate(rooms[:-2:len(room_nums)]):
+    last = len(room_nums) - 1
+    for index in range(len(rooms))[:-last:len(room_nums)]:
         m = 0
         for count in room_nums:
             if len(ret) < n+1:
