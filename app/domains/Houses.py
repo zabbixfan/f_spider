@@ -45,17 +45,21 @@ def get_building_by_name(id,build):
 
     last = len(room_nums) + len(unit_nums) - 1
     cloumn_name = [unit + room for unit in unit_nums for room in room_nums]
-    for index in range(len(rooms))[:-last:len(room_nums)+len(unit_nums)]:
-        one_floor = rooms[index:index+len(room_nums)+len(unit_nums)]
+    floors = sorted(list(set([int(re.search(r'^(\d+)\d\d室', room.room_num).group(1)) for room in rooms])))
+    print(floors)
+    for floor in floors:
+    # for index in range(len(rooms))[:-last:len(room_nums)+len(unit_nums)]:
+    #     one_floor = rooms[index:index+len(room_nums)+len(unit_nums)]
         data = {}
         for m in unit_nums:
             for n in room_nums:
-                for room in one_floor:
-                    if room.building_num == m and room.room_num.find(n) > -1:
+                for index,room in enumerate(rooms):
+                    if room.building_num == m and room.room_num.startswith(str(floor)+n):
                         data['{}{}'.format(m,n)] = '{}/{}/{}/{}'.format(room.room_num,room.floor_area,room.unit_price,room.total_price)
+                        rooms.pop(index)
                         break
                 else:
-                    print('{}{}'.format(m,n))
+                    data['{}{}'.format(m, n)] = ''
         ret.append(data)
     return {'cloumns': cloumn_name,'detail': ret}
 
