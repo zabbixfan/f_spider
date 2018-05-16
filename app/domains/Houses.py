@@ -28,7 +28,7 @@ def get_building_by_name(id,build):
 
     #获取楼幢号和房号
     number = ("1","2","3","4","5","7","8","9","0")
-    rooms = HouseDetail.query.filter(HouseDetail.house == id).filter(HouseDetail.building_num.in_(unit_nums)).fitler(HouseDetail.room_num.startswith(number)).all()
+    rooms = HouseDetail.query.filter(HouseDetail.house == id).filter(HouseDetail.building_num.in_(unit_nums)).filter(HouseDetail.room_num.startswith(number)).all()
     rooms.sort(key=lambda x: int(re.search(r'(\d+)室', x.room_num).group(1)))
     room_nums = sorted(list(set([re.search(r'(\d\d)室', room.room_num).group(1) for room in rooms])))
 
