@@ -40,7 +40,7 @@ def get_building_by_name(id,build):
             for n in room_nums:
                 for index,room in enumerate(rooms):
                     if room.building_num == m and room.room_num.startswith(str(floor)+n):
-                        data['{}{}'.format(m,n)] = '{}/{}/{}/{}'.format(room.room_num,room.floor_area,room.unit_price,room.total_price)
+                        data['{}{}'.format(m,n)] = '{},{},单价{},总价:{}'.format(room.room_num,room.floor_area,int(room.unit_price),int(room.total_price))
                         rooms.pop(index)
                         break
                 else:
